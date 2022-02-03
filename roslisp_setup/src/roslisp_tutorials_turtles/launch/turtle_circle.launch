@@ -1,0 +1,8 @@
+<launch>
+    <rosparam command = "load" file = "$(find roslisp_tutorials_turtles)/config/param.yaml"/>
+    <node name="rqt_gui" pkg="rqt_gui" type="rqt_gui"/>
+    <node name="turtle1" pkg="turtlesim" type="turtlesim_node"/>
+    <node name="navigator" pkg="roslisp_tutorials_turtles" type="navigaition"/>
+    <!-- <node name="circle" pkg="roslisp_tutorials_turtles" type="circle"/> -->
+    <node name="move" pkg="roslisp_tutorials_turtles" type="move"/>
+</launch>

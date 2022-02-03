@@ -1,0 +1,8 @@
+prefix=/home/hawk/winter_project/roslisp_setup/install
+
+Name: roslisp_tutorials_turtles
+Description: Description of roslisp_tutorials_turtles
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib 
+Requires: geometry_msgs std_msgs rospy std_msgs message_runtime turtlesim

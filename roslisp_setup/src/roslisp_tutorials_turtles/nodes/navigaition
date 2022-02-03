@@ -1,0 +1,93 @@
+#!/usr/bin/env python3
+
+import rospy
+import time
+from turtlesim.msg import Pose
+from turtlesim.srv import TeleportAbsolute
+from std_srvs.srv import Empty
+# from turtle_hw.srv import Start
+from roslisp_tutorials_turtles.msg import velocity
+from roslisp_tutorials_turtles.srv import move, turn
+from numpy import pi
+from math import sqrt, atan2, pow, fabs
+
+teleport = rospy.ServiceProxy("turtle1/teleport_absolute", TeleportAbsolute)
+draw = rospy.ServiceProxy("draw", Empty)
+# waypoints = rospy.get_param("/talker/waypoint")
+
+
+class navigaition:
+
+    def __init__(self):
+        self.curr_pose = Pose()
+        self.listener = rospy.Subscriber('turtle1/pose', Pose, self.pose_update)
+        # self.publsher = rospy.Publisher('position', Pose, queue_size=10)
+        self.default_speed = 3
+        self.curr_pose = self.pose_update()
+        self.translate = rospy.Publisher('turtle_cmd', velocity, queue_size= 10)
+
+    def __eq__(pose1, pose2):
+        return pose1.x == pose2.x and pose1.y == pose2.y and pose1.theta == pose2.theta
+
+
+    def get_pose(self):
+        return self.curr_pose
+
+    def get_speed(self):
+        return self.defualt_speed
+
+    def publish(self, vel):
+        self.translate.publish(vel)
+
+    def pose_update(self, pose_data):
+        self.curr_pose.x = round(pose_data.x, 4)
+        self.curr_pose.y = round(pose_data.y, 4)
+        if pose_data.theta < 0: self.curr_pose.theta = pose_data.theta + 2*pi
+        else: self.curr_pose.theta = pose_data.theta
+
+
+#v = d/t then d = v*t then t = d/v    
+def mov_handeler(distance):
+    #Makes turtle move
+    default_speed = 3
+    mov_message = velocity(default_speed, 0)
+    amount_of_time = distance/navigaition.get_speed()
+    start_time = rospy.Time.now()
+    while(rospy.Time.now()-start_time < amount_of_time):
+        navigaition.translate.publish(mov_message)
+
+def turn_handeler(angle):
+    #Makes turtle turn
+    turn_message = velocity(navigaition.get_speed(), 0)
+    amount_of_time = angle/navigaition.get_speed()
+    start_time = rospy.Time.now()
+    while(rospy.Time.now()-start_time < amount_of_time):
+        navigaition.translate.publish(turn_message)
+
+def save_handeler():
+    #returns turtles current position
+    return navigaition.get_pose()
+
+if __name__ == 'main':
+    try:
+        rospy.init_node('navigator')
+        move = rospy.service('move', move, mov_handeler)
+        turn = rospy.service('turn', turn, turn_handeler)
+        save = rospy.service('save', Pose, save_handeler)
+        moveing = rospy.serviceProxy('move', move)
+        nav = navigaition()
+        moveing(10)
+        rospy.spin()
+        # while True:
+        #     rospy.init_node('navigator')
+        #     move = rospy.service('move', move, mov_handeler)
+        #     turn = rospy.service('turn', turn, turn_handeler)
+        #     save = rospy.service('save', Pose, save_handeler)
+        #     moveing = rospy.serviceProxy('move', move)
+        #     nav = navigaition()
+        #     moveing(10)
+        #     rospy.spin()
+
+    except rospy.ROSInitException:
+        rospy.info("I finished!")
+        pass

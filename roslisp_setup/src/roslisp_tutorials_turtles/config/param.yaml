@@ -1,0 +1,8 @@
+tName: 'turtle1'
+r: 40
+g: 90
+b: 10
+service_name: "/set_pen"
+srv: "setpen"
+other_srv: "turtlesim-srv:setpen"
+params: ["r", "g", "b"]

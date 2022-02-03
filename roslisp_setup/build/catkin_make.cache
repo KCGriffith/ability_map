@@ -1,0 +1,2 @@
+roslisp_tutorials_turtles
+-DCATKIN_DEVEL_PREFIX=/home/hawk/winter_project/roslisp_setup/devel -DCMAKE_INSTALL_PREFIX=/home/hawk/winter_project/roslisp_setup/install -G Unix Makefiles
