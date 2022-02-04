@@ -8,6 +8,9 @@
 
 # modified environment variables
 export CMAKE_PREFIX_PATH="/home/hawk/winter_project/roslisp_setup/devel:$CMAKE_PREFIX_PATH"
+export LD_LIBRARY_PATH="/home/hawk/winter_project/roslisp_setup/devel/lib:$LD_LIBRARY_PATH"
+export PKG_CONFIG_PATH="/home/hawk/winter_project/roslisp_setup/devel/lib/pkgconfig:$PKG_CONFIG_PATH"
 export PWD='/home/hawk/winter_project/roslisp_setup/build'
+export PYTHONPATH="/home/hawk/winter_project/roslisp_setup/devel/lib/python3/dist-packages:$PYTHONPATH"
 export ROSLISP_PACKAGE_DIRECTORIES="/home/hawk/winter_project/roslisp_setup/devel/share/common-lisp:$ROSLISP_PACKAGE_DIRECTORIES"
 export ROS_PACKAGE_PATH="/home/hawk/winter_project/roslisp_setup/src:$ROS_PACKAGE_PATH"

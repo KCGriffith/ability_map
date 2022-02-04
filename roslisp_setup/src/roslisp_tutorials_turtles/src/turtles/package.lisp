@@ -7,5 +7,6 @@
   (:export
    ;; application-specific
   ;  :turtle-circle))
-   :move-turtle))
+  ;  :move-turtle))
+   :turn-turtle))
 ;; %EndTag(wikiTalker)%

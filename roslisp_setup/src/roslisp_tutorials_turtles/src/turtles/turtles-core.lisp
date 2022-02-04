@@ -31,7 +31,7 @@
 
 (defun move (name &key (dist 0))
   (roslisp_tutorials_turtles-srv:move
-    (roslisp:call-service "/move" 'roslisp_tutorials_turtles-srv:move
+    (roslisp:call-service "/moveme" 'roslisp_tutorials_turtles-srv:move
     ; (roslisp:call-service (concatenate 'string "/" name "/move") 'roslisp_tutorials_turtles-srv:move
                           :distance dist)))
 
@@ -63,4 +63,11 @@
     (set-pen "turtle1" :r 40 :g 90 :b 10)
     (set-pen "turtle1" :r (roslisp:get-param "r") :g (roslisp:get-param "g") :b (roslisp:get-param "b"))
     (move "turtle1" :dist 3)
+    (sleep 1)))
+
+(defun turn-turtle ()
+  (with-ros-node ("moveTester")
+    (set-pen "turtle1" :r 40 :g 90 :b 10)
+    (set-pen "turtle1" :r (roslisp:get-param "r") :g (roslisp:get-param "g") :b (roslisp:get-param "b"))
+    (turn "turtle1" :dist 90)
     (sleep 1)))
