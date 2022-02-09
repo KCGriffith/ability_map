@@ -5,5 +5,5 @@
     <node name="navigator" pkg="roslisp_tutorials_turtles" type="navigaition" output="screen"/>
     <!-- <node name="circle" pkg="roslisp_tutorials_turtles" type="circle"/> -->
     <!-- <node name="move" pkg="roslisp_tutorials_turtles" type="move"/> -->
-    <node name="turn" pkg="roslisp_tutorials_turtles" type="turn"/>
+    <!-- <node name="turn" pkg="roslisp_tutorials_turtles" type="turn"/> -->
 </launch>

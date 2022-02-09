@@ -32,8 +32,12 @@
 (defun move (name &key (dist 0))
   (roslisp_tutorials_turtles-srv:move
     (roslisp:call-service "/moveme" 'roslisp_tutorials_turtles-srv:move
-    ; (roslisp:call-service (concatenate 'string "/" name "/move") 'roslisp_tutorials_turtles-srv:move
                           :distance dist)))
+
+(defun turn (name &key (deg 0))
+  (roslisp_tutorials_turtles-srv:turn
+    (roslisp:call-service "/turnme" 'roslisp_tutorials_turtles-srv:turn
+                          :deg dist)))
 
 (defun set-pen (name &key (r 0) (g 0) (b 0) (width 1) (off 0))
   "Changes the color of the turtle trajectory."

@@ -53,22 +53,22 @@ class navigaition:
 def deg2rad(deg): return (deg*PI)/180
 
 #v = d/t then d = v*t then t = d/v    
-def mov_handeler(reqdistance):
+def mov_handeler(reqdist):
     #Makes turtle move
     nav = navigaition()
     default_speed = 3
     mov_message = Twist(Vector3(nav.get_speed(), 0, 0), Vector3(0, 0, 0))
-    amount_of_time = rospy.Duration.from_sec(reqdistance.distance/nav.get_speed())
+    amount_of_time = rospy.Duration.from_sec(reqdist.distance/nav.get_speed())
     start_time = rospy.Time.now()
     while(rospy.Time.now()-start_time < amount_of_time):
         nav.translate.publish(mov_message)
     return moveResponse()
 
-def turn_handeler(angle):
+def turn_handeler(reqdeg):
     #Makes turtle turn
     nav = navigaition()
     turn_message = Twist(Vector3(0, 0, 0), Vector3(0, 0, deg2rad(nav.get_speed())))
-    amount_of_time = rospy.Duration.from_sec(angle/nav.get_speed())
+    amount_of_time = rospy.Duration.from_sec(reqdeg.angle/nav.get_speed())
     start_time = rospy.Time.now()
     while(rospy.Time.now()-start_time < amount_of_time):
         nav.translate.publish(turn_message)
@@ -85,7 +85,9 @@ if __name__ == '__main__':
         mover = rospy.Service('moveme', move, mov_handeler)
         turner = rospy.Service('turnme', turn, turn_handeler)
         # save = rospy.Service('save', Pose, save_handeler)
+        turning = rospy.ServiceProxy('turnme', turn)
         # moveing = rospy.ServiceProxy('moveme', move)
+        turning(10)
         # moveing(10)
         # rospy.log_info("I shouldn't finish here")
         rospy.spin()
