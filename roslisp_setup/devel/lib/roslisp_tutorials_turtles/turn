@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+"true"; exec /usr/bin/env sbcl --noinform --load /opt/ros/noetic/share/roslisp/scripts/roslisp-sbcl-init --script "$0" "$@"
+
+(ros-load:load-system "roslisp_tutorials_turtles" "turtles-system")
+(turtles-lisp-pkg:turn-turtle)

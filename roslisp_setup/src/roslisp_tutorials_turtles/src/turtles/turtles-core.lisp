@@ -34,10 +34,21 @@
     (roslisp:call-service "/moveme" 'roslisp_tutorials_turtles-srv:move
                           :distance dist)))
 
+(<-(parameter ?x) (function ?y) (output ?z))
+(<-(place ?z) (save ?z))
+(<-())
+
+(<- (can-move ?x) (block ?x) (clear ?x))
+(<- (clear ?x) (not (on ?y ?x)))
+(block a)
+(block b)
+(block c)
+(on b a)
+
 (defun turn (name &key (deg 0))
   (roslisp_tutorials_turtles-srv:turn
     (roslisp:call-service "/turnme" 'roslisp_tutorials_turtles-srv:turn
-                          :deg dist)))
+                          :angle deg)))
 
 (defun set-pen (name &key (r 0) (g 0) (b 0) (width 1) (off 0))
   "Changes the color of the turtle trajectory."
@@ -65,13 +76,11 @@
 (defun move-turtle ()
   (with-ros-node ("moveTester")
     (set-pen "turtle1" :r 40 :g 90 :b 10)
-    (set-pen "turtle1" :r (roslisp:get-param "r") :g (roslisp:get-param "g") :b (roslisp:get-param "b"))
     (move "turtle1" :dist 3)
     (sleep 1)))
 
 (defun turn-turtle ()
-  (with-ros-node ("moveTester")
+  (with-ros-node ("turnTester")
     (set-pen "turtle1" :r 40 :g 90 :b 10)
-    (set-pen "turtle1" :r (roslisp:get-param "r") :g (roslisp:get-param "g") :b (roslisp:get-param "b"))
-    (turn "turtle1" :dist 90)
+    (turn "turtle1" :deg 90)
     (sleep 1)))

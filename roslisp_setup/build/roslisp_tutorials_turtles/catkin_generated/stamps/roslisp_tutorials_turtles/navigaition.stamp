@@ -10,7 +10,7 @@ from geometry_msgs.msg import Twist, Vector3
 from roslisp_tutorials_turtles.msg import velocity
 from roslisp_tutorials_turtles.srv import move, turn, moveResponse, turnResponse
 from numpy import pi
-from math import sqrt, atan2, pow, fabs
+from math import sqrt, atan2, pow, fabs, sin, cos
 
 PI = 3.14159265358979323846
 
@@ -23,16 +23,12 @@ class navigaition:
 
     def __init__(self):
         self.curr_pose = Pose()
-        # self.listener = rospy.Subscriber('turtle1/pose', Pose, self.pose_update)
-        self.curr_pose = rospy.Subscriber('turtle1/pose', Pose, self.pose_update)
-        # self.publsher = rospy.Publisher('position', Pose, queue_size=10)
-        self.default_speed = 3
-        # self.curr_pose = self.pose_update()
         self.translate = rospy.Publisher('turtle1/cmd_vel', Twist, queue_size= 10)
+        self.listener = rospy.Subscriber('turtle1/pose', Pose, self.pose_update)
+        self.default_speed = 3
 
     def __eq__(pose1, pose2):
         return pose1.x == pose2.x and pose1.y == pose2.y and pose1.theta == pose2.theta
-
 
     def get_pose(self):
         return self.curr_pose
@@ -50,33 +46,51 @@ class navigaition:
         else: self.curr_pose.theta = pose_data.theta
 
 
+glonav = navigaition()
+
 def deg2rad(deg): return (deg*PI)/180
 
-#v = d/t then d = v*t then t = d/v    
+def distance_formula(x1, y1, x2, y2):
+    return sqrt(((x2-x1)**2)+(((y2-y1)**2)))
+
+
 def mov_handeler(reqdist):
-    #Makes turtle move
-    nav = navigaition()
-    default_speed = 3
+    nav = glonav
+    target = reqdist.distance
+    y_distance = target*sin(nav.curr_pose.theta)
+    x_distance = target*cos(nav.curr_pose.theta)
+    target_x = nav.curr_pose.x + x_distance
+    target_y = nav.curr_pose.y + y_distance
+    threshold = 0.1
+    stop_message = Twist(Vector3(0, 0, 0), Vector3(0, 0, 0))
     mov_message = Twist(Vector3(nav.get_speed(), 0, 0), Vector3(0, 0, 0))
-    amount_of_time = rospy.Duration.from_sec(reqdist.distance/nav.get_speed())
-    start_time = rospy.Time.now()
-    while(rospy.Time.now()-start_time < amount_of_time):
+    target_dist = distance_formula(nav.curr_pose.x, nav.curr_pose.y, target_x, target_y)
+    curr_dist = distance_formula(nav.curr_pose.x, nav.curr_pose.y, target_x, target_y)
+    while(curr_dist > threshold and curr_dist <= target_dist):
+        curr_dist = distance_formula(nav.curr_pose.x, nav.curr_pose.y, target_x, target_y)
         nav.translate.publish(mov_message)
+    nav.translate.publish(stop_message)
     return moveResponse()
 
+
+
 def turn_handeler(reqdeg):
-    #Makes turtle turn
-    nav = navigaition()
-    turn_message = Twist(Vector3(0, 0, 0), Vector3(0, 0, deg2rad(nav.get_speed())))
-    amount_of_time = rospy.Duration.from_sec(reqdeg.angle/nav.get_speed())
-    start_time = rospy.Time.now()
-    while(rospy.Time.now()-start_time < amount_of_time):
+    nav = glonav
+    target = deg2rad(reqdeg.angle)
+    threshold = 0.01
+    turn_message = Twist(Vector3(0, 0, 0), Vector3(0, 0, nav.get_speed()))
+    stop_message = Twist(Vector3(0, 0, 0), Vector3(0, 0, 0))
+    while nav.curr_pose.theta-target < threshold:
         nav.translate.publish(turn_message)
+        nav.translate.publish(stop_message)
+    nav.translate.publish(stop_message)
     return turnResponse()
+
+
 
 def save_handeler():
     #returns turtles current position
-    nav = navigaition()
+    nav = glonav
     return nav.get_pose()
 
 if __name__ == '__main__':
@@ -85,10 +99,12 @@ if __name__ == '__main__':
         mover = rospy.Service('moveme', move, mov_handeler)
         turner = rospy.Service('turnme', turn, turn_handeler)
         # save = rospy.Service('save', Pose, save_handeler)
-        turning = rospy.ServiceProxy('turnme', turn)
+        # turning = rospy.ServiceProxy('turnme', turn)
         # moveing = rospy.ServiceProxy('moveme', move)
-        turning(10)
-        # moveing(10)
+        # turning(90)
+        # turning(180)
+        # rospy.sleep(3)
+        # moveing(3)
         # rospy.log_info("I shouldn't finish here")
         rospy.spin()
 
